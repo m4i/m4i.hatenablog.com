@@ -1,0 +1,176 @@
+/*
+/              body.page-index
+/about         body.page-about
+/archive       body.page-archive
+/entries/*/*/* body.page-entries-year-month-day
+/categories    body.page-categories
+/category/*    body.page-category-category_name
+/entry/*       body.page-entry
+/search        body.page-search
+*/
+
+#main {
+  margin-bottom: 50px;
+}
+
+/* index ページでは記事は表示しない */
+body.page-index #wrapper { display: none; }
+
+/* category, entries ページでは記事本文は表示しない */
+body.page-category-category_name .entry-content,
+body.page-entries-year-month-day .entry-content {
+  display: none;
+}
+body.page-category-category_name .comment-box,
+body.page-entries-year-month-day .comment-box {
+  display: none;
+}
+
+
+
+
+/* **** エントリー **** */
+
+/* エントリータイトル直下のソーシャルボタン */
+article.entry header.entry-header .social-buttons {
+  text-align: right;
+}
+
+/* はてなスターのコメントは利用しない */
+.hatena-star-comment-container { display: none; }
+
+/* 「コメントを書く」のリンクを非表示 */
+.leave-comment-title { display: none; }
+
+/* 本文 */
+.entry-content {
+  line-height: 2;
+  font-size: 14px;
+}
+
+/* code */
+.entry-content pre.code {
+  font-size: 11px;
+}
+
+/* inline code */
+.entry-content code {
+  padding: 2px 5px;
+  border: 1px solid #e5e5e5;
+  background-color: #fafafa;
+  font-family: Monaco,Consolas,"Courier New",Courier,monospace,sans-serif;
+  font-size: 12px;
+}
+
+/* gist */
+.entry-content .gist-data pre {
+  font-family: Monaco,Consolas,"Courier New",Courier,monospace !important;
+  font-size: 11px;
+}
+
+
+
+
+/* **** サイドバー **** */
+
+#box2 {
+  left: 0;
+  width: 670px; /* w170 + mr50 + w170 + mr50 + w170 + mr50 */
+}
+
+.hatena-module {
+  width: 170px;
+}
+
+
+/* 「最新記事」サイドバー (and アーカイブ) */
+.hatena-module-recent-entries,
+body.page-archive #main-inner {
+  position: relative;
+  width: 100%;
+  font-size: 14px;
+}
+  .hatena-module-recent-entries .hatena-module-body,
+  body.page-archive #main-inner ul {
+    margin: 0 80px 0 15px;
+    line-height: 1.4;
+  }
+    .hatena-module-recent-entries .hatena-module-body li,
+    body.page-archive #main-inner ul li {
+      margin: 0.5em 0;
+      list-style: none;
+    }
+      .hatena-module-recent-entries .hatena-module-body li time,
+      body.page-archive #main-inner ul li time {
+        margin-top: 2px;
+        position: absolute;
+        right: 0;
+        left: auto;
+        width: 80px;
+        color: #999;
+        font-family: Monaco,Consolas,"Courier New",Courier,monospace;
+        font-size: 12px;
+        text-align: right;
+      }
+  .hatena-module-recent-entries .hatena-module-body .seemore {
+    margin-top: 1em;
+  }
+
+
+/* 「カテゴリー」サイドバー */
+.hatena-module-category {
+  width: 100%;
+  font-size: 14px;
+}
+  .hatena-module-category .hatena-module-body {
+    margin: 0 -0.5em 0 15px;
+    line-height: 1.0;
+  }
+    .hatena-module-category .hatena-module-body li {
+      margin: 0 0.5em 0 0;
+      display: inline-block;
+    }
+      .hatena-module-category .hatena-module-body li a {
+        padding: 0.5em;
+        display: block;
+      }
+
+
+/* Twitter Widget サイドバー */
+.hatena-module-html div.twtr-widget {
+  width: 230px;
+}
+
+
+
+
+/* **** アーカイブ **** */
+
+body.page-archive #main {
+  left: 0;
+  width: 670px;
+}
+  body.page-archive #main-inner > p {
+    margin-bottom: 20px;
+    padding-bottom: 3px;
+    color: #289C9C;
+    font-size: 18px;
+  }
+  body.page-archive #main-inner h1 {
+    display: none;
+  }
+  body.page-archive #main-inner ul {
+  }
+    body.page-archive #main-inner ul li {
+      padding: 0.2em 0;
+    }
+      body.page-archive #main-inner ul li a {
+        color: #5A5A5A;
+        font-size: 14px !important;
+      }
+      body.page-archive #main-inner ul li a:hover {
+        color: #DB86BD;
+      }
+      body.page-archive #main-inner ul li .star-container {
+        position: absolute;
+      }
