@@ -1,4 +1,4 @@
-/**
+/*
 <script src="http://m4i.jp/m4i.hatenablog.com/header.js"></script>
 */
 (function($, window, undefined) {

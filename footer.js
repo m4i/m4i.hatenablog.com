@@ -1,4 +1,7 @@
 /*
+例えば /about では「ヘッダ」はないが「サイドバー」はある。
+そのため、ヘッダで読み込むべき JavaScript は2重読込防止を施した上でここでも読み込む
+
 <script src="http://m4i.jp/m4i.hatenablog.com/header.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.string/2.0.0/underscore.string.min.js"></script>
 <script src="http://m4i.jp/m4i.hatenablog.com/footer.js"></script>
@@ -125,6 +128,7 @@ function formatEntryTitleOfList($a) {
   $a.after(linkToHatenaBookmark(url)).after(' ');
 }
 
+
 /**
  * エントリータイトル横の日付のリンク先を日のページではなく記事のページにする
  */
@@ -153,6 +157,7 @@ if (isPCArchive()) {
   });
 }
 if (isPCAllArchive()) {
+  // /archive のページにタイトルを追加
   $('#main-inner').prepend($('<p>').text('全記事リスト'));
 }
 
@@ -181,7 +186,7 @@ if (isPCAllArchive()) {
 /**
  * 同じカテゴリーの記事一覧サイドバー
  */
-if (isPCEntry()) {
+if (isPCEntry()) (function() {
   // カテゴリページの HTML からエントリータイトルリンクを抜き出す正規表現
   var title_regex =
     /<a\s(?:[^>]+\s)?class=(["'])(?:[^"']*\s)?entry-title-link(?:\s[^"']*)?\1[\s\S]+?<\/a>/g;
@@ -239,7 +244,6 @@ if (isPCEntry()) {
 
       // カテゴリページに「次のページ」があれば「もっと読む」をそれに書き換える
       if (matches = html.match(pager_regex)) {
-        console.log(matches);
         var $pager_link = $(matches[0]).find('a');
         $module.find('.seemore a')
           .attr('href', category_url + query_string($pager_link.attr('href')))
@@ -251,64 +255,62 @@ if (isPCEntry()) {
       }
     });
   });
-}
+})();
 
 /**
  * DISQUS
  */
-(function(disqus_shortname) {
-  function applyCount() {
-    var DISQUS_LINK_TEXT = 'コメント欄を表示する';
-    var OBSERVE_MAX_TIME = 30000;
-    var OBSERVE_INTERVAL = 500;
+if (isPCEntry()) (function() {
+  window.disqus_shortname = 'm4i';
 
-    // 2重起動防止
-    if ($('#disqus_thread').length) return;
+  var DISQUS_LINK_TEXT = 'コメント欄を表示する';
+  var OBSERVE_MAX_TIME = 30000; // 監視を続けるミリ秒数
+  var OBSERVE_INTERVAL = 500;   // 監視間隔のミリ秒数
 
-    var $entry = $('article.entry:first');
-    if ($entry.length === 0) return;
+  // 2重起動防止
+  if ($('#disqus_thread').length > 0) return;
 
-    var permalink = $entry.find('a.entry-title-link:first').attr('href');
+  var $entry = $('article.entry:first');
+  if ($entry.length === 0) return;
 
-    var $disqus_container = $('<div>')
-      .attr('id', 'disqus_thread')
-      .appendTo($entry.find('.comment-box:last'));
+  var permalink = $entry.find('a.entry-title-link:first').attr('href');
 
-    var $disqus_link = $('<a>')
-      .attr('href', permalink + '#disqus_thread')
-      .attr('data-disqus-identifier', identifier(permalink))
-      .text(DISQUS_LINK_TEXT)
-      .click(function() {
-        $disqus_link.hide();
-        applyEmbed($entry);
-        return false;
-      })
-      .appendTo($disqus_container);
+  var $disqus_container = $('<div>')
+    .attr('id', 'disqus_thread')
+    .appendTo($entry.find('.comment-box:last'));
 
-    var s = document.createElement('script'); s.async = true;
-    s.type = 'text/javascript';
-    s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
-    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+  var $disqus_link = $('<a>')
+    .attr('href', permalink + '#disqus_thread')
+    .attr('data-disqus-identifier', identifier(permalink))
+    .text(DISQUS_LINK_TEXT)
+    .click(function() {
+      $disqus_link.hide();
+      applyEmbed($entry);
+      return false;
+    })
+    .appendTo($disqus_container);
 
-    // コメントがすでにあれば自動でコメント欄を表示
-    // なければコメント件数を表示するのではなく、DISQUS_LINK_TEXT を表示
-    var observe_count = 0;
-    var observe = function() {
-      var matches;
-      if (matches = $disqus_link.text().match(/(\d+)\s*comments?/i)) {
-        if (Number(matches[1]) === 0) {
-          $disqus_link.text(DISQUS_LINK_TEXT);
-        } else {
-          $disqus_link.click();
-        }
+  includeCountJs();
+
+  // コメントがすでにあれば自動でコメント欄を表示
+  // なければコメント件数を表示するのではなく、DISQUS_LINK_TEXT を表示
+  var observe_count = 0;
+  var observe = function() {
+    var matches = $disqus_link.text().match(/(\d+)\s*comments?/i);
+    if (matches) {
+      if (Number(matches[1]) > 0) {
+        $disqus_link.click();
       } else {
-        if (++observe_count < OBSERVE_MAX_TIME / OBSERVE_INTERVAL) {
-          setTimeout(observe, OBSERVE_INTERVAL);
-        }
+        $disqus_link.text(DISQUS_LINK_TEXT);
       }
-    };
-    observe();
-  }
+    } else {
+      if (++observe_count < OBSERVE_MAX_TIME / OBSERVE_INTERVAL) {
+        setTimeout(observe, OBSERVE_INTERVAL);
+      }
+    }
+  };
+  observe();
+
 
   function applyEmbed($entry) {
     window.disqus_url =
@@ -316,9 +318,7 @@ if (isPCEntry()) {
     window.disqus_identifier = identifier(disqus_url);
     window.disqus_title      = $entry.find('a.entry-title-link:first').text();
 
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    includeEmbedJs();
   }
 
   function canonicalize(permalink) {
@@ -333,10 +333,18 @@ if (isPCEntry()) {
       .replace(/[^-\w]+/g, '');
   }
 
-  if (isPCEntry()) {
-    window.disqus_shortname = disqus_shortname;
-    applyCount();
+  function includeCountJs() {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
   }
-})('m4i');
+
+  function includeEmbedJs() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  }
+})();
 
 })(jQuery, window);
