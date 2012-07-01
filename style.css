@@ -37,6 +37,17 @@ body.page-entries-year-month-day .comment-box {
 /* 「コメントを書く」のリンクを非表示 */
 .leave-comment-title { display: none; }
 
+/* DISQUS のコメント欄を表示するためのリンク */
+.disqus-link,
+.disqus-link:visited {
+  border-bottom: 3px solid #E1F5F5;
+  color: #289C9C;
+  font-size: 15px;
+}
+.disqus-link:hover {
+  text-decoration: none;
+}
+
 /* 本文 */
 .entry-content {
   line-height: 2;

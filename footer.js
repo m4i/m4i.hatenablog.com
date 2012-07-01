@@ -124,7 +124,7 @@ $('article.entry header.entry-header').each(function() {
  * エントリータイトル横にはてなブックマーク件数画像
  */
 if (isPCCategory() || isPCEntries()) {
-  $('article.entry h1.entry-title a').each(function() {
+  $('article.entry a.entry-title-link:first').each(function() {
     var $a = $(this);
     var url = $a.attr('href');
     $a.after(linkToHatenaBookmark(url)).after(' ');
@@ -166,22 +166,60 @@ if (isPCAllArchive()) {
  * DISQUS
  */
 (function(disqus_shortname) {
-  function entry() {
-    var $article = $('article.entry');
-    if ($article.length !== 1) return;
+  function applyCount() {
+    var DISQUS_LINK_TEXT = 'コメント欄を表示する';
+    var OBSERVE_MAX_TIME = 30000;
+    var OBSERVE_INTERVAL = 500;
 
+    var $entry = $('article.entry:first');
+    var permalink = $entry.find('a.entry-title-link:first').attr('href');
+
+    var $disqus_link = $('<a>')
+      .addClass('disqus-link')
+      .attr('href', permalink + '#disqus_thread')
+      .attr('data-disqus-identifier', identifier(permalink))
+      .text(DISQUS_LINK_TEXT)
+      .click(function() {
+        applyEmbed($entry);
+        $disqus_link.hide();
+        return false;
+      })
+      .appendTo($entry.find('.comment-box:last'));
+
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+
+    // コメントがすでにあれば自動でコメント欄を表示
+    // なければコメント件数を表示するのではなく、DISQUS_LINK_TEXT を表示
+    var observe_count = 0;
+    var observe = function() {
+      var matches;
+      if (matches = $disqus_link.text().match(/(\d+)\s*comments?/i)) {
+        if (Number(matches[1]) === 0) {
+          $disqus_link.text(DISQUS_LINK_TEXT);
+        } else {
+          $disqus_link.click();
+        }
+      } else {
+        if (++observe_count < OBSERVE_MAX_TIME / OBSERVE_INTERVAL) {
+          setTimeout(observe, OBSERVE_INTERVAL);
+        }
+      }
+    };
+    observe();
+  }
+
+  function applyEmbed($entry) {
     window.disqus_url =
       $('link[rel="canonical"]').attr('href') || canonicalize(location.href);
     window.disqus_identifier = identifier(disqus_url);
-    window.disqus_title      = $article.find('.entry-title-link:first').text();
+    window.disqus_title      = $entry.find('a.entry-title-link:first').text();
 
-    var $disqus_thread = $('<div>')
+    $('<div>')
       .attr('id', 'disqus_thread')
-      .insertAfter($article.find('.comment-box:last'));
-
-    if (/^#?disqus_thread$/.test(location.hash)) {
-      $(window).scrollTop($disqus_thread.offset().top);
-    }
+      .appendTo($entry.find('.comment-box:last'));
 
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
     dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
@@ -202,7 +240,7 @@ if (isPCAllArchive()) {
 
   if (isPCEntry()) {
     window.disqus_shortname = disqus_shortname;
-    entry();
+    applyCount();
   }
 })('m4i');
 
