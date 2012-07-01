@@ -184,7 +184,6 @@ if (isPCAllArchive()) {
       $('link[rel="canonical"]').attr('href') || canonicalize(location.href);
     window.disqus_identifier = identifier(disqus_url);
     window.disqus_title      = $article.find('.entry-title-link:first').text();
-    console.log(disqus_url, disqus_identifier, disqus_title);
 
     var $disqus_thread = $('<div>')
       .attr('id', 'disqus_thread')
