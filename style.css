@@ -37,16 +37,20 @@ body.page-entries-year-month-day .comment-box {
 /* 「コメントを書く」のリンクを非表示 */
 .leave-comment-title { display: none; }
 
-/* DISQUS のコメント欄を表示するためのリンク */
-.disqus-link,
-.disqus-link:visited {
-  border-bottom: 3px solid #E1F5F5;
-  color: #289C9C;
-  font-size: 15px;
+/* DISQUS */
+#disqus_thread {
+  margin: 5px 0 0;
 }
-.disqus-link:hover {
-  text-decoration: none;
-}
+  #disqus_thread > a,
+  #disqus_thread > a:visited,
+  #disqus_thread > a:hover {
+    border-bottom: 3px solid #E1F5F5;
+    position: relative; /* for z-index */
+    z-index: 1;         /* これがないと chrome で cursor が pointer にならない */
+    color: #289C9C;
+    font-size: 15px;
+    text-decoration: none;
+  }
 
 /* 本文 */
 .entry-content {

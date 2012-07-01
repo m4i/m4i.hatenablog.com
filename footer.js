@@ -171,20 +171,28 @@ if (isPCAllArchive()) {
     var OBSERVE_MAX_TIME = 30000;
     var OBSERVE_INTERVAL = 500;
 
+    // 2重起動防止
+    if ($('#disqus_thread').length) return;
+
     var $entry = $('article.entry:first');
+    if ($entry.length === 0) return;
+
     var permalink = $entry.find('a.entry-title-link:first').attr('href');
 
+    var $disqus_container = $('<div>')
+      .attr('id', 'disqus_thread')
+      .appendTo($entry.find('.comment-box:last'));
+
     var $disqus_link = $('<a>')
-      .addClass('disqus-link')
       .attr('href', permalink + '#disqus_thread')
       .attr('data-disqus-identifier', identifier(permalink))
       .text(DISQUS_LINK_TEXT)
       .click(function() {
-        applyEmbed($entry);
         $disqus_link.hide();
+        applyEmbed($entry);
         return false;
       })
-      .appendTo($entry.find('.comment-box:last'));
+      .appendTo($disqus_container);
 
     var s = document.createElement('script'); s.async = true;
     s.type = 'text/javascript';
@@ -216,10 +224,6 @@ if (isPCAllArchive()) {
       $('link[rel="canonical"]').attr('href') || canonicalize(location.href);
     window.disqus_identifier = identifier(disqus_url);
     window.disqus_title      = $entry.find('a.entry-title-link:first').text();
-
-    $('<div>')
-      .attr('id', 'disqus_thread')
-      .appendTo($entry.find('.comment-box:last'));
 
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
     dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
