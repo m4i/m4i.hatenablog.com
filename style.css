@@ -93,25 +93,21 @@ body.page-entries-year-month-day .comment-box {
 }
 
 
-/* 「最新記事」サイドバー (and アーカイブ) */
-.m4i-entry-list,
-body.page-archive #main-inner {
+/* 「最新記事」サイドバー、同カテゴリサイドバー、アーカイブ */
+.m4i-entry-list {
   position: relative;
   width: 100%;
   font-size: 14px;
 }
-  .m4i-entry-list .m4i-entry-list-body,
-  body.page-archive #main-inner ul {
+  .m4i-entry-list .m4i-entry-list-body {
     margin: 0 80px 0 15px;
     line-height: 1.4;
   }
-    .m4i-entry-list .m4i-entry-list-body li,
-    body.page-archive #main-inner ul li {
+    .m4i-entry-list .m4i-entry-list-body li {
       margin: 0.5em 0;
       list-style: none;
     }
-      .m4i-entry-list .m4i-entry-list-body li time,
-      body.page-archive #main-inner ul li time {
+      .m4i-entry-list .m4i-entry-list-body li time {
         margin-top: 2px;
         position: absolute;
         right: 0;

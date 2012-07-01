@@ -152,6 +152,9 @@ if (isPCCategory() || isPCEntries()) {
  * アーカイブページを見やすく
  */
 if (isPCArchive()) {
+  $('#main-inner').addClass('m4i-entry-list');
+  $('#main-inner ul').addClass('m4i-entry-list-body');
+
   $('#main-inner li > a').each(function() {
     formatEntryTitleOfList($(this));
   });
