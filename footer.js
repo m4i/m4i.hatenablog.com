@@ -113,16 +113,6 @@ function formatEntryTitleOfList($a) {
 }
 
 /**
- * ソーシャルボタンをエントリータイトル直下に移動
- */
-//$('article.entry').each(function() {
-//  var $entry = $(this);
-//  $entry
-//    .find('footer.entry-footer .social-buttons')
-//    .appendTo($entry.find('header.entry-header'));
-//});
-
-/**
  * エントリータイトル横の日付のリンク先を日のページではなく記事のページにする
  */
 $('article.entry header.entry-header').each(function() {

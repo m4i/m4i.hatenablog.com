@@ -31,11 +31,6 @@ body.page-entries-year-month-day .comment-box {
 
 /* **** エントリー **** */
 
-/* エントリータイトル直下のソーシャルボタン */
-article.entry header.entry-header .social-buttons {
-  text-align: right;
-}
-
 /* はてなスターのコメントは利用しない */
 .hatena-star-comment-container { display: none; }
 
