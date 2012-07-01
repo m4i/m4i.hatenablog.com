@@ -94,23 +94,23 @@ body.page-entries-year-month-day .comment-box {
 
 
 /* 「最新記事」サイドバー (and アーカイブ) */
-.hatena-module-recent-entries,
+.m4i-entry-list,
 body.page-archive #main-inner {
   position: relative;
   width: 100%;
   font-size: 14px;
 }
-  .hatena-module-recent-entries .hatena-module-body,
+  .m4i-entry-list .m4i-entry-list-body,
   body.page-archive #main-inner ul {
     margin: 0 80px 0 15px;
     line-height: 1.4;
   }
-    .hatena-module-recent-entries .hatena-module-body li,
+    .m4i-entry-list .m4i-entry-list-body li,
     body.page-archive #main-inner ul li {
       margin: 0.5em 0;
       list-style: none;
     }
-      .hatena-module-recent-entries .hatena-module-body li time,
+      .m4i-entry-list .m4i-entry-list-body li time,
       body.page-archive #main-inner ul li time {
         margin-top: 2px;
         position: absolute;
@@ -122,7 +122,7 @@ body.page-archive #main-inner {
         font-size: 12px;
         text-align: right;
       }
-  .hatena-module-recent-entries .hatena-module-body .seemore {
+  .m4i-entry-list .m4i-entry-list-body .seemore {
     margin-top: 1em;
   }
 

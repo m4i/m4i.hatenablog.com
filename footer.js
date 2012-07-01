@@ -69,6 +69,19 @@ function isSearch() {
 }
 
 /**
+ * URL から pathname を抽出する
+ */
+function pathname(url) {
+  return url.replace(/^https?:\/\/[^\/]*|[#?].*$/g, '');
+}
+/**
+ * URL から query string を抽出する
+ */
+function query_string(url) {
+  return url.replace(/^[^?]+/, '');
+}
+
+/**
  * URL を受け取りはてなブックマーク件数画像の element を返す
  */
 function linkToHatenaBookmark(url) {
@@ -149,6 +162,9 @@ if (isPCAllArchive()) {
 if (isPCAllArchive()) {
   $('.hatena-module-recent-entries').hide();
 } else {
+  $('.hatena-module-recent-entries').addClass('m4i-entry-list');
+  $('.hatena-module-recent-entries .hatena-module-body').addClass('m4i-entry-list-body');
+
   $('.hatena-module-recent-entries .hatena-module-body a').each(function() {
     formatEntryTitleOfList($(this));
   });
@@ -160,6 +176,81 @@ if (isPCAllArchive()) {
         .text('もっと読む')
     )
     .appendTo('.hatena-module-recent-entries .hatena-module-body');
+}
+
+/**
+ * 同じカテゴリーの記事一覧サイドバー
+ */
+if (isPCEntry()) {
+  // カテゴリページの HTML からエントリータイトルリンクを抜き出す正規表現
+  var title_regex =
+    /<a\s(?:[^>]+\s)?class=(["'])(?:[^"']*\s)?entry-title-link(?:\s[^"']*)?\1[\s\S]+?<\/a>/g;
+  // カテゴリページの HTML から「次のページ」を抜き出す正規表現
+  var pager_regex =
+    /<span\s(?:[^>]+\s)?class=(["'])(?:[^"']*\s)?pager-next(?:\s[^"']*)?\1[\s\S]+?<\/span>/;
+
+  // エントリータイトル下のカテゴリ数分ループ
+  $('article.entry header.entry-header .categories:first a').each(function() {
+    var $category_link = $(this);
+    var category_url   = pathname($category_link.attr('href'));
+    var category_name  = $category_link.text();
+
+    // そのカテゴリの記事の件数を取得して複数件なければ skip
+    var $category_list_link =
+      $('.hatena-module-category a[href$="' + category_url + '"]');
+    var matches = $category_list_link.text().match(/\((\d+)\)\s+$/);
+    if (!(matches && Number(matches[1]) > 1)) return;
+
+    // カテゴリページの HTML を取得
+    //
+    // どのカテゴリページ順にレスポンスがあるかは不定なので、
+    // エントリーリストの順番も不定
+    $.get(category_url).done(function(html) {
+      // HTML からエントリーリストを取得
+      var entries = [];
+      var matches;
+      while (matches = title_regex.exec(html)) {
+        var $entry_link = $(matches[0]);
+        var entry_url   = pathname($entry_link.attr('href'));
+        if (entry_url === location.pathname) continue;
+        entries.push({ url: entry_url, title: $entry_link.text() });
+      }
+
+      // 「最新記事」モジュールを clone して利用
+      var $module = $('.hatena-module-recent-entries:first').clone()
+        .removeClass('hatena-module-recent-entries')
+        .addClass('hatena-module-recent-category-entries')
+        .insertBefore('.hatena-module-recent-entries:first');
+
+      // モジュールタイトルの書き換え
+      $module.find('.hatena-module-title > a')
+        .attr('href', category_url)
+        .text(_.str.sprintf('"%s" カテゴリの記事', category_name));
+
+      // エントリーリストの書き換え
+      var $ul = $module.find('.hatena-module-body > ul').empty();
+      $.each(entries, function(index, entry) {
+        var $a = $('<a>')
+          .attr('href', entry.url)
+          .text(entry.title);
+        $ul.append($('<li>').append($a));
+        formatEntryTitleOfList($a);
+      });
+
+      // カテゴリページに「次のページ」があれば「もっと読む」をそれに書き換える
+      if (matches = html.match(pager_regex)) {
+        console.log(matches);
+        var $pager_link = $(matches[0]).find('a');
+        $module.find('.seemore a')
+          .attr('href', category_url + query_string($pager_link.attr('href')))
+          .text($pager_link.text());
+
+      // なければ「もっと読む」は消す
+      } else {
+        $module.find('.seemore').remove();
+      }
+    });
+  });
 }
 
 /**
