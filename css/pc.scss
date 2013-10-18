@@ -20,6 +20,19 @@
 
 /* ************************************************************************** */
 
+// はてなスターのコメントは利用しない
+.hatena-star-comment-container {
+  display: none !important;
+}
+
+// はてなカウンターへのリンクを非表示
+.hatena-counter {
+  display: none !important;
+}
+
+/* ************************************************************************** */
+
+// ブログタイトル
 #blog-title {
   // はてなブログのヘッダを非表示にしているので普通の position で配置する
   position: static;
@@ -38,19 +51,16 @@
   }
 }
 
-// はてなスターのコメントは利用しない
-.hatena-star-comment-container {
-  display: none !important;
-}
-
-// はてなカウンターへのリンクを非表示
-.hatena-counter {
-  display: none !important;
+// 記事フッタ
+.entry-footer {
+  .open-disqus-thread {
+    cursor: pointer;
+  }
 }
 
 /* ************************************************************************** */
 
-// エントリー本文
+// 記事本文
 .entry-content {
   // 幅を広げて1行の文字数を増やす
   max-width: 800px !important;
