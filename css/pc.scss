@@ -1,0 +1,262 @@
+//  /                              body.page-index
+//  /about                         body.page-about
+//  /archive                       body.page-archive
+//  /archive/<year>                body.page-archive
+//  /archive/<year>/<month>        body.page-archive
+//  /archive/<year>/<month>/<day>  body.page-archive
+//  /archive/category/<category>   body.page-archive body.page-archive-category
+//  /entries/<year>/<month>/<day>  body.page-entries-year-month-day
+//  /categories                    body.page-categories
+//  /category/<category>           body.page-category-category_name
+//  /entry/*                       body.page-entry
+//  /search                        body.page-search
+
+// Extend 用
+.categories-a {
+  padding: 0 0.4em !important;
+  background-color: #eee;
+  font-size: 75%;
+}
+
+/* ************************************************************************** */
+
+#blog-title {
+  // はてなブログのヘッダを非表示にしているので普通の position で配置する
+  position: static;
+  margin: 1em;
+
+  // タイトル横の description は表示しない
+  #blog-description {
+    display: none;
+  }
+}
+
+// 記事ヘッダ
+.entry-header {
+  .date {
+    display: block !important;
+  }
+}
+
+// はてなスターのコメントは利用しない
+.hatena-star-comment-container {
+  display: none !important;
+}
+
+// はてなカウンターへのリンクを非表示
+.hatena-counter {
+  display: none !important;
+}
+
+/* ************************************************************************** */
+
+// エントリー本文
+.entry-content {
+  // 幅を広げて1行の文字数を増やす
+  max-width: 800px !important;
+
+  // 行間を開けて読みやすく
+  line-height: 2;
+
+  p {
+    // 下方向にだけ margin があると pre, p, pre とならんだ時などに
+    // 不自然になるので、上下に margin をつける
+    margin: 1em 0;
+  }
+
+  // ```
+  // code
+  // ```
+  pre.code {
+    // 文字を小さくして横スクロールを減らす
+    font-size: 12px !important;
+    // コードは上下に長くなり過ぎないように行間を詰める
+    line-height: 1.5;
+  }
+
+  // gist
+  .gist {
+    .gist-data {
+      font-size: 12px !important;
+
+      table {
+        margin: 0 !important;
+
+        pre {
+          // pre に対して縮小設定されている場合があるのでここでも設定する
+          font-size: 12px !important;
+        }
+      }
+    }
+  }
+}
+
+/* ************************************************************************** */
+
+// サイドバー
+#box2-inner {
+  position: relative;
+
+  a {
+    // 黒背景に暗いリンクが見難いので明るく
+    color: #9ce;
+  }
+
+  // Recent Entries
+  .hatena-module-recent-entries {
+    width: 100% !important;
+
+    // 記事タイトル
+    li {
+      line-height: 2;
+
+      // (JavaScript で追加)
+      .date {
+        position: absolute;
+      }
+
+      .recent-entries-title-container {
+        margin-left: 7em;
+
+        .recent-entries-entry-title {
+          font-size: 120%;
+        }
+      }
+
+      // はてなブックマークの件数画像 (JavaScript で追加)
+      .bookmark-widget-counter {
+        margin-left: 1em;
+      }
+    }
+  }
+
+  // HTML
+  .hatena-module-html {
+    display: none !important;
+  }
+
+  .hatena-module-profile {
+    margin-top: 120px !important;
+  }
+
+  .hatena-module-search-box {
+    position: absolute;
+    left: 0;
+  }
+
+  // Archive
+  .hatena-module-archive {
+    // 年、月を縦に並べるために inline から block に変更
+    li {
+      display: block !important;
+    }
+  }
+}
+
+/* ************************************************************************** */
+
+// /, /?page=* (トップページ)
+body.page-index {
+  // index ページでは記事は表示しない
+  #wrapper {
+    display: none;
+  }
+
+  // サイドバー
+  #box2 {
+    // ヘッダのみなので margin は取らない
+    margin-top: 0 !important;
+  }
+}
+
+/* ************************************************************************** */
+
+// /entry/* (記事ページ)
+body.page-entry {
+  article {
+    .entry-header {
+      .categories {
+        text-align: right;
+
+        a {
+          @extend .categories-a;
+        }
+      }
+    }
+  }
+}
+
+/* ************************************************************************** */
+
+// /archive/* (アーカイブページ)
+body.page-archive {
+  #main-inner {
+    h1 {
+      position: absolute;
+      font-size: 80%;
+    }
+
+    ul {
+      margin-left: 5em;
+
+      li {
+        padding-bottom: 1em;
+        position: relative;
+
+        .categories {
+          display: block;
+          position: absolute;
+          top: 1.1em;
+          left: 0.5em;
+
+          a {
+            @extend .categories-a;
+          }
+        }
+      }
+    }
+  }
+}
+
+// "/archive/category/<category>" (カテゴリアーカイブページ)
+// body.page-archive と両方が適用される
+body.page-archive-category {
+  // "トップ > <category>" と表示される部分を
+  // その他の archive ページの
+  //
+  //     2012-01-01から1年間の記事リスト
+  //
+  // と表示される部分と同じように表示する
+  #top-box {
+    // 横幅を #wrapper と合わせる
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 10%;
+
+    // <p> と合わせる
+    .breadcrumb {
+      margin-bottom: 1em;
+      text-indent: 1em;
+    }
+  }
+}
+
+/* ************************************************************************** */
+
+// /saerch (検索ページ)
+// /entries/<year>/<month>/<day> (日毎記事ページ)
+// /category/<category> (カテゴリ記事ページ)
+
+// 基本的には JavaScript により Google or アーカイブページにリダイレクトされる
+
+body.page-search,
+body.page-category-category_name,
+body.page-entries-year-month-day {
+  article {
+    // 本文を表示しない
+    .entry-content,
+    .entry-footer {
+      display: none;
+    }
+  }
+}
