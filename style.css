@@ -7,3 +7,9 @@
 body.page-index #wrapper {
   display: none;
 }
+
+/* archive ページではタイトルだけ表示する */
+body.page-archive .entry-description,
+body.page-archive .entry-thumb-link {
+  display: none;
+}
